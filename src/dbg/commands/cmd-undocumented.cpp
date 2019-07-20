@@ -241,19 +241,29 @@ bool cbInstrZydis(int argc, char* argv[])
     int argcount = instr->operandCount;
     dputs_untranslated(cp.InstructionText(true).c_str());
     dprintf_untranslated("prefix size: %d\n", instr->raw.prefixes.count);
+    if(instr->raw.rex.isDecoded)
+        dprintf_untranslated("rex.W: %d, rex.R: %d, rex.X: %d, rex.B: %d, rex.data: %02x\n", instr->raw.rex.W, instr->raw.rex.R, instr->raw.rex.X, instr->raw.rex.B, instr->raw.rex.data[0]);
     dprintf_untranslated("disp.offset: %d, disp.size: %d\n", instr->raw.disp.offset, instr->raw.disp.size);
     dprintf_untranslated("imm[0].offset: %d, imm[0].size: %d\n", instr->raw.imm[0].offset, instr->raw.imm[0].size);
     dprintf_untranslated("imm[1].offset: %d, imm[1].size: %d\n", instr->raw.imm[1].offset, instr->raw.imm[1].size);
     dprintf_untranslated("size: %d, id: %d, opcount: %d\n", cp.Size(), cp.GetId(), instr->operandCount);
-    auto rwstr = [](uint8_t access)
+    auto rwstr = [](uint8_t action)
     {
-        if(access & ZYDIS_OPERAND_ACTION_READ && access & ZYDIS_OPERAND_ACTION_WRITE)
-            return "read+write";
-        if(access & ZYDIS_OPERAND_ACTION_READ)
+        switch(action)
+        {
+        case ZYDIS_OPERAND_ACTION_READ:
+        case ZYDIS_OPERAND_ACTION_CONDREAD:
             return "read";
-        if(access & ZYDIS_OPERAND_ACTION_WRITE)
+        case ZYDIS_OPERAND_ACTION_WRITE:
+        case ZYDIS_OPERAND_ACTION_CONDWRITE:
             return "write";
-        return "???";
+        case ZYDIS_OPERAND_ACTION_READWRITE:
+        case ZYDIS_OPERAND_ACTION_READ_CONDWRITE:
+        case ZYDIS_OPERAND_ACTION_CONDREAD_WRITE:
+            return "read+write";
+        default:
+            return "???";
+        }
     };
     auto vis = [](uint8_t visibility)
     {
@@ -281,7 +291,7 @@ bool cbInstrZydis(int argc, char* argv[])
             dprintf_untranslated("register: %s\n", cp.RegName(op.reg.value));
             break;
         case ZYDIS_OPERAND_TYPE_IMMEDIATE:
-            dprintf_untranslated("immediate: 0x%p\n", op.imm.value);
+            dprintf_untranslated("immediate: 0x%p\n", op.imm.value.u);
             break;
         case ZYDIS_OPERAND_TYPE_MEMORY:
         {

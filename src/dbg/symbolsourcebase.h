@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <vector>
 #include <functional>
+#include <map>
 
 struct SymbolInfoGui
 {
@@ -14,12 +15,12 @@ struct SymbolInfoGui
 
 struct SymbolInfo : SymbolInfoGui
 {
-    duint rva;
-    duint size;
-    int32 disp;
+    duint rva = 0;
+    duint size = 0;
+    int32 disp = 0;
     String decoratedName;
     String undecoratedName;
-    bool publicSymbol;
+    bool publicSymbol = false;
 
     void convertToGuiSymbol(duint modbase, SYMBOLINFO* info) const override
     {
@@ -28,15 +29,16 @@ struct SymbolInfo : SymbolInfoGui
         info->undecoratedSymbol = (char*)this->undecoratedName.c_str();
         info->type = sym_symbol;
         info->freeDecorated = info->freeUndecorated = false;
+        info->ordinal = 0;
     }
 };
 
 struct LineInfo
 {
-    duint rva;
-    duint size;
-    duint disp;
-    int lineNumber;
+    duint rva = 0;
+    duint size = 0;
+    duint disp = 0;
+    int lineNumber = 0;
     String sourceFile;
 };
 
@@ -46,6 +48,8 @@ class SymbolSourceBase
 {
 private:
     std::vector<uint8_t> _symbolBitmap; // TODO: what is the maximum size for this?
+    std::map<std::string, std::string> _sourceFileMapPdbToDisk; // pdb source path -> disk source path
+    std::map<std::string, std::string> _sourceFileMapDiskToPdb; // disk source path -> pdb source path
 
 public:
     virtual ~SymbolSourceBase() = default;
@@ -128,6 +132,15 @@ public:
     {
         return false; // Stub
     }
+
+    virtual std::string loadedSymbolPath() const
+    {
+        return ""; // Stub
+    }
+
+    bool mapSourceFilePdbToDisk(const std::string & pdb, const std::string & disk);
+    bool getSourceFilePdbToDisk(const std::string & pdb, std::string & disk) const;
+    bool getSourceFileDiskToPdb(const std::string & disk, std::string & pdb) const;
 };
 
 static SymbolSourceBase EmptySymbolSource;

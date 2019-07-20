@@ -16,6 +16,7 @@ ScriptView::ScriptView(StdTable* parent) : StdTable(parent)
     enableMultiSelection(false);
     enableColumnSorting(false);
     setDrawDebugOnly(false);
+    setDisassemblyPopupEnabled(false);
 
     int charwidth = getCharWidth();
 
@@ -433,7 +434,7 @@ void ScriptView::add(int count, const char** lines)
         setCellContent(i, 1, QString(lines[i]));
     BridgeFree(lines);
     reloadData(); //repaint
-    Bridge::getBridge()->setResult(1);
+    Bridge::getBridge()->setResult(BridgeResult::ScriptAdd, 1);
 }
 
 void ScriptView::clear()
@@ -607,7 +608,7 @@ void ScriptView::enableHighlighting(bool enable)
 
 void ScriptView::messageResult(int result)
 {
-    Bridge::getBridge()->setResult(result == QMessageBox::Yes);
+    Bridge::getBridge()->setResult(BridgeResult::ScriptMessage, result == QMessageBox::Yes);
 }
 
 void ScriptView::closeSlot()

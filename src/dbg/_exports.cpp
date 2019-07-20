@@ -764,7 +764,7 @@ extern "C" DLL_EXPORT duint _dbg_getbranchdestination(duint addr)
     Zydis cp;
     if(!cp.Disassemble(addr, data))
         return 0;
-    if(cp.IsBranchType(Zydis::BTJmp | Zydis::BTCall | Zydis::BTLoop))
+    if(cp.IsBranchType(Zydis::BTJmp | Zydis::BTCall | Zydis::BTLoop | Zydis::BTXbegin))
     {
         auto opValue = cp.ResolveOpValue(0, [](ZydisRegister reg) -> size_t
         {
@@ -1473,7 +1473,7 @@ extern "C" DLL_EXPORT duint _dbg_sendmessage(DBGMSG type, void* param1, void* pa
     case DBG_MENU_PREPARE:
     {
         PLUG_CB_MENUPREPARE info;
-        info.hMenu = int(param1);
+        info.hMenu = GUIMENUTYPE(duint(param1));
         plugincbcall(CB_MENUPREPARE, &info);
     }
     break;

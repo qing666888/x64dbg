@@ -44,10 +44,13 @@ public:
     virtual QString getCellContent(int r, int c) = 0;
     virtual bool isValidIndex(int r, int c) = 0;
     virtual void sortRows(int column, bool ascending) = 0;
+    duint getDisassemblyPopupAddress(int mousex, int mousey) override;
 
     //context menu helpers
     void setupCopyMenu(QMenu* copyMenu);
+    void setupCopyColumnMenu(QMenu* copyMenu);
     void setupCopyMenu(MenuBuilder* copyMenu);
+    void setupCopyColumnMenu(MenuBuilder* copyMenu);
     void setCopyMenuOnly(bool bSet, bool bDebugOnly = true);
 
     //draw helpers
@@ -65,6 +68,11 @@ public:
     void setAddressLabel(bool addressLabel)
     {
         bAddressLabel = addressLabel;
+    }
+
+    bool setDisassemblyPopupEnabled(bool enabled)
+    {
+        return bDisassemblyPopupEnabled = enabled;
     }
 
 signals:
@@ -135,4 +143,5 @@ protected:
     QString mHighlightText;
     int mAddressColumn = -1;
     bool bAddressLabel = true;
+    bool bDisassemblyPopupEnabled = true;
 };

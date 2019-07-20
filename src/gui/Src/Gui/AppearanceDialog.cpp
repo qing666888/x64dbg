@@ -542,6 +542,7 @@ void AppearanceDialog::colorInfoListInit()
     colorInfoListAppend(tr("Graph:"), "", "");
     colorInfoListAppend(tr("Background"), "GraphBackgroundColor", "");
     colorInfoListAppend(tr("Node"), "GraphNodeColor", "GraphNodeBackgroundColor");
+    colorInfoListAppend(tr("Current node shadow"), "GraphCurrentShadowColor", "");
     colorInfoListAppend(tr("Terminal node shadow"), "GraphRetShadowColor", "");
     colorInfoListAppend(tr("Indirect call shadow"), "GraphIndirectcallShadowColor", "");
     colorInfoListAppend(tr("Unconditional branch line"), "GraphJmpColor", "");
@@ -565,7 +566,9 @@ void AppearanceDialog::colorInfoListInit()
     colorInfoListAppend(tr("Breakpoint Summary Keywords"), "BreakpointSummaryKeywordColor", "");
     colorInfoListAppend(tr("Breakpoint Summary Strings"), "BreakpointSummaryStringColor", "");
     colorInfoListAppend(tr("Patch located in relocation region"), "PatchRelocatedByteHighlightColor", "");
-
+    colorInfoListAppend(tr("Symbol Unloaded Text"), "SymbolUnloadedTextColor", "");
+    colorInfoListAppend(tr("Symbol Loading Text"), "SymbolLoadingTextColor", "");
+    colorInfoListAppend(tr("Symbol Loaded Text"), "SymbolLoadedTextColor", "");
 
     //dev helper
     const QMap<QString, QColor>* Colors = &Config()->defaultColors;
